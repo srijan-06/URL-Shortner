@@ -52,7 +52,7 @@ async function createShortUrl(rawUrl, ttlSeconds = null) {
   const code = base62.encode(Number(row.id));
 
   // Warm the cache immediately so the first redirect is a hit.
-  await cacheSet(code, longUrl, row.expires_at);
+  await cacheSet(code, longUrl, row.expires_at, Number(row.id));
 
   return {
     code,
