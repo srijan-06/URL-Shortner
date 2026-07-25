@@ -1,0 +1,69 @@
+# Local dev stack: Postgres + Redis + backend API + frontend.
+# One command to run the whole thing on your PC:
+#
+#   docker compose up --build
+#
+# Backend  -> http://localhost:4000
+# Frontend -> http://localhost:5173
+#
+# (You can also run only the datastores — `docker compose up postgres redis` —
+#  and run the backend/frontend with `npm run dev` for hot reload.)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: urlshortener
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      PORT: 4000
+      BASE_URL: http://localhost:4000
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/urlshortener
+      REDIS_URL: redis://redis:6379
+      RATE_LIMIT_CAPACITY: 20
+      RATE_LIMIT_REFILL_PER_SEC: 5
+      CACHE_TTL_SECONDS: 3600
+      CORS_ORIGIN: '*'
+    ports:
+      - '4000:4000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    environment:
+      # Talk to the backend container from the browser via localhost.
+      VITE_API_BASE_URL: http://localhost:4000
+    ports:
+      - '5173:5173'
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

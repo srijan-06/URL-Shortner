@@ -1,0 +1,14 @@
+[
+  {
+    "event": "SUBAGENT_STOP",
+    "session_id": "8fa18527-400b-4304-88a0-61fe1a673692",
+    "agent_id": "a15401c9db5a1cb30",
+    "agentName": "unknown",
+    "duration": 0,
+    "outputLength": 39,
+    "transcriptPath": "/Users/maley.srijan/.claude/projects/-Users-maley-srijan-Desktop-pro/8fa18527-400b-4304-88a0-61fe1a673692/subagents/agent-a15401c9db5a1cb30.jsonl",
+    "tool": "claude-code",
+    "source": "cli",
+    "timestamp": "2026-07-14T09:57:06.336Z"
+  }
+]

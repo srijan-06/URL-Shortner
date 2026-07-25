@@ -1,0 +1,36 @@
+# Render Blueprint — deploys the backend as a web service.
+# Postgres and Redis are provisioned as managed services (Supabase + Upstash)
+# and their connection strings are set as environment variables in the Render
+# dashboard (or here, if you use Render's own managed Postgres/Redis).
+#
+# Deploy: push to GitHub, then in Render choose "New +" -> "Blueprint" and point
+# it at this repo. Set DATABASE_URL and REDIS_URL as secret env vars.
+
+services:
+  - type: web
+    name: url-shortener-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: node src/server.js
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: BASE_URL
+        sync: false # set to the public Render URL once assigned
+      - key: DATABASE_URL
+        sync: false # Supabase connection string (mark as secret)
+      - key: REDIS_URL
+        sync: false # Upstash connection string (mark as secret)
+      - key: PGSSL
+        value: 'true' # managed Postgres requires TLS
+      - key: RATE_LIMIT_CAPACITY
+        value: '20'
+      - key: RATE_LIMIT_REFILL_PER_SEC
+        value: '5'
+      - key: CACHE_TTL_SECONDS
+        value: '3600'
+      - key: CORS_ORIGIN
+        sync: false # set to your Vercel frontend URL

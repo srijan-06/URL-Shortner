@@ -1,0 +1,27 @@
+{
+  "name": "url-shortener-backend",
+  "version": "1.0.0",
+  "description": "Scalable URL shortener API — base62 encoding, cache-aside caching, token-bucket rate limiting, async click analytics.",
+  "type": "commonjs",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "migrate": "node src/db/migrate.js",
+    "test": "jest --runInBand",
+    "test:watch": "jest --watch"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "ioredis": "^5.4.1",
+    "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "license": "MIT"
+}
